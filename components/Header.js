@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
 
 const Header = ({ fontSize }) => (
     <View style={{ flexDirection: 'row' }}>
