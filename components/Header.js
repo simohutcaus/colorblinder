@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 
-const Header = () => (
+const Header = ({ fontSize }) => (
     <View style={{ flexDirection: 'row' }}>
         <Text style={[styles.header, { color: "#E64C3C" }]}>c</Text>
         <Text style={[styles.header, { color: "#E57E31" }]}>o</Text>
@@ -19,5 +19,13 @@ const styles = StyleSheet.create({
         fontFamily: 'dogbyte'
     }
 });
+
+Header.propTypes = {
+    fontSize: PropTypes.number
+}
+
+Header.defaultProps = {
+    fontSize: 55
+}
 
 export { Header };
