@@ -9,7 +9,10 @@ const StackNavigator = createStackNavigator(
      screen: Home
    },
    Game: {
-     screen: Game
+     screen: Game,
+     navigationOptions: {
+       gesturesEnabled: false
+     }
    }
  },
  {
