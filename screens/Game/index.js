@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Dimensions, TouchableOpacity, Text } from 'react-native';
 import { Header } from '../../components';
 import styles from "./styles";
 import { generateRGB, mutateRGB } from '../../utilities';
@@ -22,6 +22,8 @@ export default class Home extends Component {
         const RGB = generateRGB();
         const mRGB = mutateRGB(RGB);
         const { points } = this.state;
+        const size = Math.min(Math.max(Math.floor(Math.sqrt(points)),
+        2), 5);
         this.setState({
           diffTileIndex: [this.generateSizeIndex(), this.generateSizeIndex()],
           diffTileColor: `rgb(${mRGB.r}, ${mRGB.g}, ${mRGB.b})`,
@@ -31,15 +33,14 @@ export default class Home extends Component {
       };
 
       onTilePress = (rowIndex, columnIndex) => {
-          console.log(`row ${rowIndex} column ${columnIndex} pressed!`)
-          const {diffTileIndex, points, timeLeft } = this.state;
-          if (rowIndex == diffTileIndex[0] && columnIndex ==
+          const { diffTileIndex, points, timeLeft } = this.state;
+          if(rowIndex == diffTileIndex[0] && columnIndex ==
             diffTileIndex[1]) {
-                this.setState({ points: points + 1, timeLeft: timeLeft + 2
-                });
+                this.setState({ points: points + 1, timeLeft: timeLeft + 2});
             } else {
-                this.setState({ timeLeft: timeLeft - 2 });
+                this.setState({ timeLeft: timeLeft -2 });
             }
+            this.generateNewRound();
       }
     
     componentWillMount() {
@@ -82,8 +83,22 @@ export default class Home extends Component {
                         ))}
                 </View>
                         ))}
+
             </View>
+            <View style={styles.bottomContainer}>
+                            <View style={{ flex: 1 }}>
+                                <Text style={styles.counterCount}>{this.state.points}</Text>
+                                <Text style={styles.counterLabel}>points</Text>
+                            </View>
+                            <View style={{ flex: 1 }}>
+                                <Text style={styles.counterCount}>{this.state.timeLeft}</Text>
+                                <Text style={styles.counterLabel}>seconds left</Text>
+                            </View>
+                            <View style={{ flex: 1 }}>
+                            </View>
+                            </View>
         </View>
+        
         );
     }
 }
