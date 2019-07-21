@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Dimensions, TouchableOpacity, Text } from 'react-native';
+import { View, Dimensions, TouchableOpacity, Text, Image } from 'react-native';
 import { Header } from '../../components';
 import styles from "./styles";
 import { generateRGB, mutateRGB } from '../../utilities';
@@ -11,7 +11,8 @@ export default class Home extends Component {
         timeLeft: 15,
         rgb: generateRGB(),
         size: 2,
-        diffTileIndex: ''
+        diffTileIndex: '',
+        gameState: 'INGAME'       
     };
 
     generateSizeIndex = () => {
@@ -42,12 +43,41 @@ export default class Home extends Component {
             }
             this.generateNewRound();
       }
+
+      onBottomBarPress = async () => {
+          switch(this.state.gameState) { 
+              case 'INGAME': {
+                  this.setState({ gameState: 'PAUSED'});
+                  break;
+              }
+              case 'PAUSED': {
+                  this.setState({ gameState: 'INGAME'});
+                  break
+              }
+              case 'LOST': {
+                  await this.setState({ points: 0, timeLeft: 15, size: 2
+                });
+                    this.generateNewRound();
+                    this.setState({
+                        gameState: 'INGAME'
+                    })
+                    break
+              }
+          }
+
+      };
     
     componentWillMount() {
         this.generateNewRound();
         this.interval = setInterval(() => {
-          this.setState(state => ({ timeLeft: state.timeLeft - 1 }));
-        }, 1000);
+            if (this.state.gameState === 'INGAME') {
+                if (this.state.timeLeft <= 0) {
+                    this.setState({ gameState: 'LOST' });
+                } else {
+                    this.setState({ timeLeft: this.state.timeLeft - 1 });
+                }
+            }
+        }, 1000)
       }
 
     componentWillUnmount() {
@@ -60,11 +90,19 @@ export default class Home extends Component {
         const { rgb, diffTileIndex, diffTileColor } = this.state;
         const { width } = Dimensions.get("window");
 
+        const bottomIcon = 
+            this.state.gameState === 'INGAME'
+            ? require('../../assets/icons/pause.png')
+            : this.state.gameState === 'PAUSED'
+            ? require('../../assets/icons/play.png')
+            : require('../../assets/icons/replay.png');
+
         return (
         <View style={styles.container}>
             <Header />
             <View style={{ height: width * 0.875, width: width * 0.875,
             flexDirection: 'row'}}>
+
                 {Array(2).fill().map((val, columnIndex) => (
                 <View style={{ flex: 1, flexDirection: 'column' }} key={columnIndex}>
                     {Array(2).fill().map((val, rowIndex) => (
@@ -94,7 +132,19 @@ export default class Home extends Component {
                                 <Text style={styles.counterCount}>{this.state.timeLeft}</Text>
                                 <Text style={styles.counterLabel}>seconds left</Text>
                             </View>
-                            <View style={{ flex: 1 }}>
+                            <View style={ styles.bestContainer}>
+                                <Image source={require("../../assets/icons/trophy.png")}
+                                style={styles.bestIcon} />
+                                <Text style={styles.bestLabel}>
+                                    0
+                                </Text>
+                            </View>
+                            <View style = {styles.bestContainer}>
+                                <Image source={require('../../assets/icons/clock.png')}
+                                style={styles.longTimeIcon} />
+                                <Text style={styles.bestTimeLabel}>
+                                    0
+                                </Text>
                             </View>
                             </View>
         </View>

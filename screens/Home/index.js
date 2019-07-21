@@ -29,6 +29,7 @@ export default class Home extends Component {
     return (
       <View style={styles.container}>
         <Header />
+        <Header />
         <TouchableOpacity
           onPress={this.onPlayPress}
           style={{ flexDirection: "row", alignItems: "center", marginTop: 80 }}
